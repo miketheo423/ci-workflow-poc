@@ -37,7 +37,7 @@ jobs:
           ref: main
           token: ${{ secrets.PAT }}
       - name: Log
-        run: echo ${{ steps.deploy_repo.ref }}
+        run: echo ${{ github.ref }}
 
       # - name: Create Release
       #   id: create_release
