@@ -26,6 +26,6 @@ jobs:
           repository: "miketheo423/ci-workflow-poc"
           type: "stable"
       - name: Show release
-        run: echo ${{ steps.picks_release.outputs.release }}
+        run: echo "${{ steps.picks_release.outputs.release }}""
       # - name: Show Secrets
       #   run: echo ${{ secrets.RUNNER_TOKEN }}
