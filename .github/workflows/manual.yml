@@ -22,7 +22,7 @@ jobs:
         uses: rez0n/actions-github-release@main
         id: picks-release
         env:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RUNNER_TOKEN }}
           repository: "miketheo423/ci-workflow-poc"
           type: "stable"
       - name: Show release
