@@ -25,7 +25,22 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: "miketheo423/ci-workflow-poc"
           type: "stable"
-      - name: Show release
-        run: echo "${{ steps.picks_release.outputs.release }}""
-      # - name: Show Secrets
-      #   run: echo ${{ secrets.RUNNER_TOKEN }}
+      - name: Show release version
+        run: |
+          echo ${{ steps.picks_release.outputs.release }} \
+          echo ${{ steps.picks_release.outputs.release_id }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ steps.picks_release.outputs.release }}
+          release_name: Release ${{ steps.picks_release.outputs.release }}
+          body: |
+            Release Notes:
+            https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
+          draft: false
+          prerelease: false
+          owner: miketheo423
+          repo: ci-env-${{ github.event.inputs.environment }}
