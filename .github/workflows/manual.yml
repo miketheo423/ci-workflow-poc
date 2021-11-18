@@ -29,13 +29,20 @@ jobs:
         run: |
           echo ${{ steps.picks_release.outputs.release }} \
           echo ${{ steps.picks_release.outputs.release_id }}
+      - name: Checkout Deploy Repo
+        uses: actions/checkout@v2
+        with:
+          repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
+          ref: main
+          token: ${{ secrets.PAT }}
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          tag_name: "${{ steps.picks_release.outputs.release }}"
+          tag_name: "${{ github.ref }}"
           release_name: "Release ${{ steps.picks_release.outputs.release }}"
           body: |
             Release Notes:
