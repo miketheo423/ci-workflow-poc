@@ -9,19 +9,21 @@ on:
         description: Environment
         required: true
         options:
-          - foo
-          - bar
-          - baz
+          - dev
+          - qa
+          - stage
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
-  greet:
-    # The type of runner that the job will run on
+  deploy:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Runs a single command using the runners shell
-      - name: Show Selected Environment
-        run: echo "Hello ${{ github.event.inputs.environment }}"
+      - name: Get latest release of NodeJS
+        uses: rez0n/actions-github-release@main
+        id: picks-release
+        env:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: "miketheo423/ci-workflow-poc"
+          type: "stable"
+      - name: Show release
+        run: echo ${{ steps.picks-release.outputs.release }}
