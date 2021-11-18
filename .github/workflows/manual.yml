@@ -18,17 +18,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Get latest release of Predict
-        uses: rez0n/actions-github-release@main
-        id: picks_release
-        env:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: "miketheo423/ci-workflow-poc"
-          type: "stable"
-      - name: Show release version
-        run: |
-          echo ${{ steps.picks_release.outputs.release }} \
-          echo ${{ steps.picks_release.outputs.release_id }}
+      # - name: Get latest release of Predict
+      #   uses: rez0n/actions-github-release@main
+      #   id: picks_release
+      #   env:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     repository: "miketheo423/ci-workflow-poc"
+      #     type: "stable"
+      # - name: Show release version
+      #   run: |
+      #     echo ${{ steps.picks_release.outputs.release }} \
+      #     echo ${{ steps.picks_release.outputs.release_id }}
       - name: Checkout Deploy Repo
         id: deploy_repo
         uses: actions/checkout@v2
@@ -36,20 +36,22 @@ jobs:
           repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
           ref: main
           token: ${{ secrets.PAT }}
+      - name: Log
+        run: echo ${{ steps.deploy_repo.outputs.ref }}
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        with:
-          tag_name: "v0.1.0"
-          release_name: "Release ${{ steps.picks_release.outputs.release }}"
-          body: |
-            Release Notes:
-            https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
-          draft: false
-          prerelease: false
-          owner: miketheo423
-          commitish: "${{ steps.deploy_repo.outputs.ref }}"
-          repo: ci-env-${{ github.event.inputs.environment }}
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.PAT }}
+      #   with:
+      #     tag_name: "v0.1.0"
+      #     release_name: "Release ${{ steps.picks_release.outputs.release }}"
+      #     body: |
+      #       Release Notes:
+      #       https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
+      #     draft: false
+      #     prerelease: false
+      #     owner: miketheo423
+      #     commitish: "${{ steps.deploy_repo.outputs.ref }}"
+      #     repo: ci-env-${{ github.event.inputs.environment }}
