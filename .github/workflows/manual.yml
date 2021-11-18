@@ -18,17 +18,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # - name: Get latest release of Predict
-      #   uses: rez0n/actions-github-release@main
-      #   id: picks_release
-      #   env:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     repository: "miketheo423/ci-workflow-poc"
-      #     type: "stable"
-      # - name: Show release version
-      #   run: |
-      #     echo ${{ steps.picks_release.outputs.release }} \
-      #     echo ${{ steps.picks_release.outputs.release_id }}
+      - name: Get latest release of Predict
+        uses: rez0n/actions-github-release@main
+        id: picks_release
+        env:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: "miketheo423/ci-workflow-poc"
+          type: "stable"
+      - name: Show release version
+        run: |
+          echo ${{ steps.picks_release.outputs.release }} \
+          echo ${{ steps.picks_release.outputs.release_id }}
       - name: Checkout Deploy Repo
         id: deploy_repo
         uses: actions/checkout@v2
