@@ -39,19 +39,19 @@ jobs:
       - name: Log
         run: echo ${{ github.ref }}
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.PAT }}
-      #   with:
-      #     tag_name: "v0.1.0"
-      #     release_name: "Release ${{ steps.picks_release.outputs.release }}"
-      #     body: |
-      #       Release Notes:
-      #       https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
-      #     draft: false
-      #     prerelease: false
-      #     owner: miketheo423
-      #     commitish: "${{ steps.deploy_repo.outputs.ref }}"
-      #     repo: ci-env-${{ github.event.inputs.environment }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: "Release ${{ steps.picks_release.outputs.release }}"
+          commitish: ${{github.ref}}
+          body: |
+            Release Notes:
+            https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
+          draft: false
+          prerelease: false
+          owner: miketheo423
+          repo: ci-env-${{ github.event.inputs.environment }}
