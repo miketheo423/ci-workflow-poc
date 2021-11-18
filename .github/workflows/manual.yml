@@ -35,8 +35,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          tag_name: ${{ steps.picks_release.outputs.release }}
-          release_name: Release ${{ steps.picks_release.outputs.release }}
+          tag_name: "${{ steps.picks_release.outputs.release }}"
+          release_name: "Release ${{ steps.picks_release.outputs.release }}"
           body: |
             Release Notes:
             https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
