@@ -18,12 +18,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Get latest release of NodeJS
-        uses: rez0n/actions-github-release@main
-        id: picks_release
-        env:
-          token: ${{ secrets.RUNNER_TOKEN }}
-          repository: "miketheo423/ci-workflow-poc"
-          type: "stable"
-      - name: Show release
-        run: echo ${{ steps.picks_release.outputs.release }}
+      # - name: Get latest release of NodeJS
+      #   uses: rez0n/actions-github-release@main
+      #   id: picks_release
+      #   env:
+      #     token: ${{ secrets.RUNNER_TOKEN }}
+      #     repository: "miketheo423/ci-workflow-poc"
+      #     type: "stable"
+      # - name: Show release
+      #   run: echo ${{ steps.picks_release.outputs.release }}
+      - name: Show Secrets
+        run: echo ${{ secrets.RUNNER_TOKEN }}
