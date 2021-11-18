@@ -20,10 +20,10 @@ jobs:
     steps:
       - name: Get latest release of NodeJS
         uses: rez0n/actions-github-release@main
-        id: picks-release
+        id: picks_release
         env:
           token: ${{ secrets.RUNNER_TOKEN }}
           repository: "miketheo423/ci-workflow-poc"
           type: "stable"
       - name: Show release
-        run: echo ${{ steps.picks-release.outputs.release }}
+        run: echo ${{ steps.picks_release.outputs.release }}
