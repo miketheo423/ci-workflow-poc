@@ -38,28 +38,14 @@ jobs:
         with:
           github-token: ${{ secrets.PAT }}
           script: |
-            const fs = require('fs');
-            const { Buffer } = require('buffer');
-
-            function updateFile(environment, version) {
-              const filePath = `ci/${environment}.yaml`;
-              try {
-                const file = fs.readFileSync(filePath, 'utf8');
-                const content = file.replace(/(?<=tag: )(.*?)(?=\s)/, version);
-                const base64Content = Buffer.from(content).toString('base64');
-                return base64Content;
-              } catch (err) {
-                throw err;
-              }
-            }
+            const { getRepo, updateVersionInFile } = require('ci/index.js');
 
             const { ENVIRONMENT, VERSION, REPO } = process.env;
-            const path = 'values.yaml';
             const owner = 'miketheo423';
+            const path = 'values.yaml';
 
-            const { data } = await github.rest.repos.getContent({ owner, repo: REPO, path });
-
-            const content = updateFile(ENVIRONMENT, VERSION);
+            const data = await getRepo({ github, owner, repo: REPO, path })
+            const content = updateVersionInFile(data.content, VERSION);
 
             await github.rest.repos.createOrUpdateFileContents({
               owner,
@@ -79,7 +65,6 @@ jobs:
             });
 
       - name: Checkout Deployment Repo
-        id: deploy_repo
         uses: actions/checkout@v2
         with:
           repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
@@ -94,7 +79,7 @@ jobs:
         with:
           tag_name: ${{ steps.picks_release.outputs.release }}
           release_name: "Release ${{ steps.picks_release.outputs.release }}"
-          commitish: ${{github.ref}}
+          commitish: ${{ github.ref }}
           body: |
             Release Notes:
             https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}

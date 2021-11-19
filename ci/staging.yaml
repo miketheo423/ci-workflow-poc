@@ -1,4 +1,0 @@
-containers:
-  test:
-    name: test
-    tag: v1.17.0
