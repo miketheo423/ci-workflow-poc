@@ -46,20 +46,17 @@ jobs:
             const owner = 'miketheo423';
             const path = 'values.yaml';
 
-            # Get the values.yaml file data
             const { content, sha } = await getValuesFile({ github, owner, repo: REPO, path })
 
-            # Update file to include new version
-            const updateContent = updateVersionInFile(data.content, VERSION);
+            const updatedContent = updateVersionInFile(data.content, VERSION);
 
-            # Commit updates file to repo
             await updateValuesFile({ 
               github, 
               owner, 
               path, 
               sha, 
               repo: REPO, 
-              content: updateContent, 
+              content: updatedContent, 
               version: VERSION 
             });
 
