@@ -35,14 +35,13 @@ jobs:
         uses: actions/github-script@v5
         env:
           REPO: ci-env-${{ github.event.inputs.environment }}
-          ENVIRONMENT: ${{ github.event.inputs.environment }}
           VERSION: "${{ steps.latest_release.outputs.tag_name }}"
         with:
           github-token: ${{ secrets.PAT }}
           script: |
             const { getValuesFile, updateVersionInFile, updateValuesFile } = require(`${process.env.GITHUB_WORKSPACE}/ci/index.js`);
 
-            const { ENVIRONMENT, VERSION, REPO } = process.env;
+            const { VERSION, REPO } = process.env;
             const owner = 'miketheo423';
             const path = 'values.yaml';
 
