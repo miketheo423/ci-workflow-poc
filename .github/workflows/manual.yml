@@ -50,36 +50,35 @@ jobs:
 
             const updatedContent = updateVersionInFile(content, VERSION);
 
-            await updateValuesFile({ 
-              github, 
-              owner, 
-              path, 
-              sha, 
-              repo: REPO, 
-              content: updatedContent, 
-              version: VERSION 
+            await github.rest.repos.createOrUpdateFileContents({
+              owner,
+              repo: REPO,
+              path,
+              content,
+              sha,
+              message: `Bumps to ${VERSION}`,
             });
 
-      - name: Checkout Deployment Repo
-        uses: actions/checkout@v2
-        with:
-          repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
-          ref: main
-          token: ${{ secrets.PAT }}
+      # - name: Checkout Deployment Repo
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
+      #     ref: main
+      #     token: ${{ secrets.PAT }}
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        with:
-          release_name: ${{ steps.picks_release.outputs.name }}
-          tag_name: ${{ steps.latest_release.outputs.tag_name }}
-          commitish: ${{ github.ref }}
-          body: |
-            Release Notes:
-            ${{ steps.latest_release.outputs.html_url }}
-          draft: false
-          prerelease: false
-          owner: miketheo423
-          repo: ci-env-${{ github.event.inputs.environment }}
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.PAT }}
+      #   with:
+      #     release_name: ${{ steps.picks_release.outputs.name }}
+      #     tag_name: ${{ steps.latest_release.outputs.tag_name }}
+      #     commitish: ${{ github.ref }}
+      #     body: |
+      #       Release Notes:
+      #       ${{ steps.latest_release.outputs.html_url }}
+      #     draft: false
+      #     prerelease: false
+      #     owner: miketheo423
+      #     repo: ci-env-${{ github.event.inputs.environment }}
