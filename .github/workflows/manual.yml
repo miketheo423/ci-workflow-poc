@@ -26,13 +26,8 @@ jobs:
           repository: "miketheo423/ci-workflow-poc"
           type: "stable"
 
-      - name: Checkout Deployment Repo
-        id: deploy_repo
+      - name: Picks Repo
         uses: actions/checkout@v2
-        with:
-          repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
-          ref: main
-          token: ${{ secrets.PAT }}
 
       - name: Update values.yml
         uses: actions/github-script@v5
@@ -42,7 +37,7 @@ jobs:
           VERSION: "${{ steps.picks_release.outputs.release }}"
         with:
           script: |
-            const { updateFile } = require('../../ci/updateFile.js');
+            const { updateFile } = require('./ci/updateFile.js');
             const content = updateFile(process.env.ENVIRONMENT, process.env.VERSION);
             github.rest.repos.createOrUpdateFileContents({
               owner: 'miketheo423',
@@ -59,6 +54,14 @@ jobs:
                 email: 'miketheocodes@gmail.com'
               }
             });
+
+      # - name: Checkout Deployment Repo
+      #   id: deploy_repo
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
+      #     ref: main
+      #     token: ${{ secrets.PAT }}
 
       # - name: Create Release
       #   id: create_release
