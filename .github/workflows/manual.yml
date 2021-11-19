@@ -1,8 +1,7 @@
-name: Deploy to Environment
+name: Deploy
 
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
       environment:
         type: choice
@@ -13,36 +12,31 @@ on:
           - qa
           - stage
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Find current node env
-  #       uses: actions/github-script@v5
-  #       with:
-
-  #         script: console.log('directory', __dirname);
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Get latest release of Predict
-        uses: rez0n/actions-github-release@main
-        id: picks_release
-        env:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: "miketheo423/ci-workflow-poc"
-          type: "stable"
-
-      - name: Picks Repo
+      - name: Checkout Main Repo
         uses: actions/checkout@v2
+
+      - name: Get Latest Release
+        uses: actions/github-script@v5
+        id: latest_release
+        with:
+          script: |
+            const { getLatestRelease } = require(`${process.env.GITHUB_WORKSPACE}/ci/index.js`);
+            const { name, tag_name, html_url } = await getLatestRelease({ github, owner: 'miketheo423', repo: 'ci-workflow-poc' });
+
+            core.setOutput('name', name);
+            core.setOutput('tag_name', tag_name);
+            core.setOutput('html_url', html_url);
 
       - name: Update values.yml
         uses: actions/github-script@v5
         env:
           REPO: ci-env-${{ github.event.inputs.environment }}
           ENVIRONMENT: ${{ github.event.inputs.environment }}
-          VERSION: "${{ steps.picks_release.outputs.release }}"
+          VERSION: "${{ steps.latest_release.outputs.tag_name }}"
         with:
           github-token: ${{ secrets.PAT }}
           script: |
@@ -85,12 +79,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          tag_name: ${{ steps.picks_release.outputs.release }}
-          release_name: "Release ${{ steps.picks_release.outputs.release }}"
+          release_name: ${{ steps.picks_release.outputs.name }}
+          tag_name: ${{ steps.latest_release.outputs.tag_name }}
           commitish: ${{ github.ref }}
           body: |
             Release Notes:
-            https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
+            "${{ steps.latest_release.outputs.html_url }}"
           draft: false
           prerelease: false
           owner: miketheo423

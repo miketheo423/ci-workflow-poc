@@ -1,5 +1,14 @@
 const { Buffer } = require('buffer');
 
+async function getLatestRelease({ github, owner, repo }) {
+  try {
+    const { data } = await github.rest.repos.getLatestRelease({ owner, repo });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function getRepo({ github, owner, repo, path }) {
   try {
     const { data } = await github.rest.repos.getContent({ owner, repo, path });
@@ -44,6 +53,7 @@ async function updateFile() {
 }
 
 module.exports = {
+  getLatestRelease,
   getRepo,
   updateVersionInFile,
   updateFile,
