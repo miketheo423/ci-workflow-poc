@@ -55,7 +55,7 @@ jobs:
             const path = 'values.yaml';
             const owner = 'miketheo423';
 
-            const { sha } = await octokit.rest.repos.getContent({ owner, repo: REPO, path });
+            const { sha } = await github.rest.repos.getContent({ owner, repo: REPO, path });
 
             const content = updateFile(ENVIRONMENT, VERSION);
 
