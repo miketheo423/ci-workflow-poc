@@ -15,75 +15,82 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Get latest release of Predict
-        uses: rez0n/actions-github-release@main
-        id: picks_release
-        env:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: "miketheo423/ci-workflow-poc"
-          type: "stable"
-
-      - name: Picks Repo
-        uses: actions/checkout@v2
-
-      - name: Update values.yml
+      - name: Find current node env
         uses: actions/github-script@v5
-        env:
-          REPO: ci-env-${{ github.event.inputs.environment }}
-          ENVIRONMENT: ${{ github.event.inputs.environment }}
-          VERSION: "${{ steps.picks_release.outputs.release }}"
         with:
-          github-token: ${{ secrets.PAT }}
-          script: |
-            const { getRepo, updateVersionInFile } = require('../../ci/index.js');
+          script: console.log('directory', __dirname);
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Get latest release of Predict
+  #       uses: rez0n/actions-github-release@main
+  #       id: picks_release
+  #       env:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         repository: "miketheo423/ci-workflow-poc"
+  #         type: "stable"
 
-            const { ENVIRONMENT, VERSION, REPO } = process.env;
-            const owner = 'miketheo423';
-            const path = 'values.yaml';
+  #     - name: Picks Repo
+  #       uses: actions/checkout@v2
 
-            const data = await getRepo({ github, owner, repo: REPO, path })
-            const content = updateVersionInFile(data.content, VERSION);
+  #     - name: Update values.yml
+  #       uses: actions/github-script@v5
+  #       env:
+  #         REPO: ci-env-${{ github.event.inputs.environment }}
+  #         ENVIRONMENT: ${{ github.event.inputs.environment }}
+  #         VERSION: "${{ steps.picks_release.outputs.release }}"
+  #       with:
+  #         github-token: ${{ secrets.PAT }}
+  #         script: |
+  #           const { getRepo, updateVersionInFile } = require('../../ci/index.js');
 
-            await github.rest.repos.createOrUpdateFileContents({
-              owner,
-              repo: REPO,
-              path,
-              content,
-              sha: data.sha,
-              message: `Bumps to ${VERSION}`,
-              committer: {
-                name: context.actor,
-                email: 'miketheocodes@gmail.com'
-              },
-              author: {
-                name: context.actor,
-                email: 'miketheocodes@gmail.com'
-              }
-            });
+  #           const { ENVIRONMENT, VERSION, REPO } = process.env;
+  #           const owner = 'miketheo423';
+  #           const path = 'values.yaml';
 
-      - name: Checkout Deployment Repo
-        uses: actions/checkout@v2
-        with:
-          repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
-          ref: main
-          token: ${{ secrets.PAT }}
+  #           const data = await getRepo({ github, owner, repo: REPO, path })
+  #           const content = updateVersionInFile(data.content, VERSION);
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        with:
-          tag_name: ${{ steps.picks_release.outputs.release }}
-          release_name: "Release ${{ steps.picks_release.outputs.release }}"
-          commitish: ${{ github.ref }}
-          body: |
-            Release Notes:
-            https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
-          draft: false
-          prerelease: false
-          owner: miketheo423
-          repo: ci-env-${{ github.event.inputs.environment }}
+  #           await github.rest.repos.createOrUpdateFileContents({
+  #             owner,
+  #             repo: REPO,
+  #             path,
+  #             content,
+  #             sha: data.sha,
+  #             message: `Bumps to ${VERSION}`,
+  #             committer: {
+  #               name: context.actor,
+  #               email: 'miketheocodes@gmail.com'
+  #             },
+  #             author: {
+  #               name: context.actor,
+  #               email: 'miketheocodes@gmail.com'
+  #             }
+  #           });
+
+  #     - name: Checkout Deployment Repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
+  #         ref: main
+  #         token: ${{ secrets.PAT }}
+
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.PAT }}
+  #       with:
+  #         tag_name: ${{ steps.picks_release.outputs.release }}
+  #         release_name: "Release ${{ steps.picks_release.outputs.release }}"
+  #         commitish: ${{ github.ref }}
+  #         body: |
+  #           Release Notes:
+  #           https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
+  #         draft: false
+  #         prerelease: false
+  #         owner: miketheo423
+  #         repo: ci-env-${{ github.event.inputs.environment }}
