@@ -51,14 +51,21 @@ jobs:
               }
             }
 
-            const content = updateFile(process.env.ENVIRONMENT, process.env.VERSION);
+            const { ENVIRONMENT, VERSION, REPO } = process.env;
+            const path = 'values.yaml';
+            const owner = 'miketheo423';
 
-            github.rest.repos.createOrUpdateFileContents({
-              owner: 'miketheo423',
-              repo: process.env.REPO,
-              path: 'values.yaml',
-              message: `Bumps to ${process.env.VERSION}`,
+            const sha = await octokit.rest.repos.getContent({ owner, repo: REPO, path });
+
+            const content = updateFile(ENVIRONMENT, VERSION);
+
+            await github.rest.repos.createOrUpdateFileContents({
+              owner,
+              repo: REPO,
+              path,
               content,
+              sha,
+              message: `Bumps to ${VERSION}`,
               committer: {
                 name: context.actor,
                 email: 'miketheocodes@gmail.com'
