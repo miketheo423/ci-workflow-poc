@@ -9,6 +9,7 @@ async function getLatestRelease({ github, owner, repo }) {
   }
 }
 
+// Gets the values.yaml file that needs to be updated for the deployment
 async function getValuesFile({ github, owner, repo, path }) {
   try {
     const { data } = await github.rest.repos.getContent({ owner, repo, path });
@@ -18,6 +19,7 @@ async function getValuesFile({ github, owner, repo, path }) {
   }
 }
 
+// Updates the tag version number in file to match the latest release version
 function updateVersionInFile(content, version) {
   try {
     const fileContent = Buffer.from(content, 'base64').toString('utf8');
@@ -29,6 +31,7 @@ function updateVersionInFile(content, version) {
   }
 }
 
+// Commits file back into deployment repo
 async function updateValuesFile({ github, owner, path, repo, content, sha, version }) {
   try {
     await github.rest.repos.createOrUpdateFileContents({
@@ -50,5 +53,3 @@ module.exports = {
   updateVersionInFile,
   updateValuesFile,
 };
-
-// updateFile('dev', 'v1.0.76');
