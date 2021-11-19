@@ -84,7 +84,7 @@ jobs:
           commitish: ${{ github.ref }}
           body: |
             Release Notes:
-            "${{ steps.latest_release.outputs.html_url }}"
+            ${{ steps.latest_release.outputs.html_url }}
           draft: false
           prerelease: false
           owner: miketheo423
