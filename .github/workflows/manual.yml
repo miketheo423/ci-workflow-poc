@@ -25,6 +25,9 @@ jobs:
   #         script: console.log('directory', __dirname);
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ci
     steps:
       - name: Get latest release of Predict
         uses: rez0n/actions-github-release@main
@@ -95,6 +98,3 @@ jobs:
           prerelease: false
           owner: miketheo423
           repo: ci-env-${{ github.event.inputs.environment }}
-    defaults:
-      run:
-        working-directory: ci
