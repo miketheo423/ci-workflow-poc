@@ -50,21 +50,14 @@ jobs:
 
             const updatedContent = updateVersionInFile(content, VERSION);
 
-            await github.rest.repos.createOrUpdateFileContents({
+            await updateValuesFile({
+              github,
               owner,
-              repo: REPO,
               path,
-              content: updatedContent,
               sha,
-              message: `Bumps to ${VERSION}`,
-              committer: {
-                name: context.actor,
-                email: 'miketheocodes@gmail.com'
-              },
-              author: {
-                name: context.actor,
-                email: 'miketheocodes@gmail.com'
-              }
+              repo: REPO,
+              content: updatedContent,
+              version: VERSION 
             });
 
       - name: Checkout Deployment Repo
