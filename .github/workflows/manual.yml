@@ -42,19 +42,23 @@ jobs:
           VERSION: "${{ steps.picks_release.outputs.release }}"
         with:
           script: |
-            const { updateFile } = require('./ci/updateFile.js')
-            const content = updateFile(process.env.ENVIRONMENT, process.env.VERSION)
+            const { updateFile } = require('./ci/updateFile.js');
+            const content = updateFile(process.env.ENVIRONMENT, process.env.VERSION);
             github.rest.repos.createOrUpdateFileContents({
               owner: 'miketheo423',
               repo: process.env.REPO,
               path: 'values.yaml',
               message: `Bumps to ${process.env.VERSION}`,
               content,
-              committer.name: context.actor,
-              committer.email: 'miketheocodes@gmail.com',
-              author.name: context.actor,
-              author.email: 'miketheocodes@gmail.com'
-            })
+              committer: {
+                name: context.actor,
+                email: 'miketheocodes@gmail.com'
+              },
+              author: {
+                name: context.actor,
+                email: 'miketheocodes@gmail.com'
+              }
+            });
 
       # - name: Create Release
       #   id: create_release
