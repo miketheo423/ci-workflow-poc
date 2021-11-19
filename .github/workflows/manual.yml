@@ -44,7 +44,6 @@ jobs:
           ENVIRONMENT: ${{ github.event.inputs.environment }}
           VERSION: "${{ steps.picks_release.outputs.release }}"
         with:
-          working-directory: ci
           github-token: ${{ secrets.PAT }}
           script: |
             const { getRepo, updateVersionInFile } = require('./index.js');
@@ -96,3 +95,6 @@ jobs:
           prerelease: false
           owner: miketheo423
           repo: ci-env-${{ github.event.inputs.environment }}
+    defaults:
+      run:
+        working-directory: ci
