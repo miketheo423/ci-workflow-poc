@@ -39,13 +39,15 @@ jobs:
           github-token: ${{ secrets.PAT }}
           script: |
             const fs = require('fs');
+            const { Buffer } = require('buffer');
 
             function updateFile(environment, version) {
               const filePath = `ci/${environment}.yaml`;
               try {
                 const file = fs.readFileSync(filePath, 'utf8');
                 const content = file.replace(/(?<=tag: )(.*?)(?=\s)/, version);
-                return content;
+                const base64Content = Buffer.from(content).toString('base64');
+                return base64Content;
               } catch (err) {
                 throw err;
               }
