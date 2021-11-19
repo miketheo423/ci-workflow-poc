@@ -37,8 +37,21 @@ jobs:
           VERSION: "${{ steps.picks_release.outputs.release }}"
         with:
           script: |
-            const { updateFile } = require('../../ci/updateFile.js');
+            const fs = require('fs');
+
+            function updateFile(environment, version) {
+              const filePath = `./${environment}.yaml`;
+              try {
+                const file = fs.readFileSync(filePath, 'utf8');
+                const content = file.replace(/(?<=tag: )(.*?)(?=\s)/, version);
+                return content;
+              } catch (err) {
+                throw err;
+              }
+            }
+
             const content = updateFile(process.env.ENVIRONMENT, process.env.VERSION);
+
             github.rest.repos.createOrUpdateFileContents({
               owner: 'miketheo423',
               repo: process.env.REPO,
