@@ -40,7 +40,7 @@ jobs:
             const fs = require('fs');
 
             function updateFile(environment, version) {
-              const filePath = `./${environment}.yaml`;
+              const filePath = `ci/${environment}.yaml`;
               try {
                 const file = fs.readFileSync(filePath, 'utf8');
                 const content = file.replace(/(?<=tag: )(.*?)(?=\s)/, version);
