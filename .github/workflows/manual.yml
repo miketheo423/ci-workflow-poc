@@ -38,7 +38,18 @@ jobs:
         with:
           github-token: ${{ secrets.PAT }}
           script: |
-            const { updateFile } = require('ci/updateFile.js');
+            const fs = require('fs');
+
+            function updateFile(environment, version) {
+              const filePath = `ci/${environment}.yaml`;
+              try {
+                const file = fs.readFileSync(filePath, 'utf8');
+                const content = file.replace(/(?<=tag: )(.*?)(?=\s)/, version);
+                return content;
+              } catch (err) {
+                throw err;
+              }
+            }
 
             const content = updateFile(process.env.ENVIRONMENT, process.env.VERSION);
 
