@@ -55,7 +55,7 @@ jobs:
             const path = 'values.yaml';
             const owner = 'miketheo423';
 
-            const { sha } = await github.rest.repos.getContent({ owner, repo: REPO, path });
+            const { data } = await github.rest.repos.getContent({ owner, repo: REPO, path });
 
             const content = updateFile(ENVIRONMENT, VERSION);
 
@@ -64,7 +64,7 @@ jobs:
               repo: REPO,
               path,
               content,
-              sha,
+              sha: data.sha,
               message: `Bumps to ${VERSION}`,
               committer: {
                 name: context.actor,
