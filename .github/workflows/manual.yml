@@ -25,9 +25,6 @@ jobs:
   #         script: console.log('directory', __dirname);
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ci
     steps:
       - name: Get latest release of Predict
         uses: rez0n/actions-github-release@main
@@ -49,7 +46,7 @@ jobs:
         with:
           github-token: ${{ secrets.PAT }}
           script: |
-            const { getRepo, updateVersionInFile } = require('./index.js');
+            const { getRepo, updateVersionInFile } = require(`process.env.GITHUB_WORKSPACE/ci/index.js`);
 
             const { ENVIRONMENT, VERSION, REPO } = process.env;
             const owner = 'miketheo423';
