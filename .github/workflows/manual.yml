@@ -46,7 +46,7 @@ jobs:
         with:
           github-token: ${{ secrets.PAT }}
           script: |
-            const { getRepo, updateVersionInFile } = require(`process.env.GITHUB_WORKSPACE/ci/index.js`);
+            const { getRepo, updateVersionInFile } = require(`${process.env.GITHUB_WORKSPACE}/ci/index.js`);
 
             const { ENVIRONMENT, VERSION, REPO } = process.env;
             const owner = 'miketheo423';
