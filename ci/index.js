@@ -9,7 +9,7 @@ async function getLatestRelease({ github, owner, repo }) {
   }
 }
 
-async function getRepo({ github, owner, repo, path }) {
+async function getValuesFile({ github, owner, repo, path }) {
   try {
     const { data } = await github.rest.repos.getContent({ owner, repo, path });
     return data;
@@ -29,23 +29,15 @@ function updateVersionInFile(content, version) {
   }
 }
 
-async function updateFile() {
+async function updateValuesFile({ github, owner, path, repo, content, sha, version }) {
   try {
     await github.rest.repos.createOrUpdateFileContents({
       owner,
-      repo: REPO,
+      repo,
       path,
       content,
-      sha: data.sha,
-      message: `Bumps to ${VERSION}`,
-      committer: {
-        name: context.actor,
-        email: 'miketheocodes@gmail.com',
-      },
-      author: {
-        name: context.actor,
-        email: 'miketheocodes@gmail.com',
-      },
+      sha,
+      message: `Bumps to ${version}`,
     });
   } catch (error) {
     throw error;
@@ -54,9 +46,9 @@ async function updateFile() {
 
 module.exports = {
   getLatestRelease,
-  getRepo,
+  getValuesFile,
   updateVersionInFile,
-  updateFile,
+  updateValuesFile,
 };
 
 // updateFile('dev', 'v1.0.76');

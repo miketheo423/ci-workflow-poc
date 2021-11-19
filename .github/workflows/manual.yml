@@ -40,30 +40,27 @@ jobs:
         with:
           github-token: ${{ secrets.PAT }}
           script: |
-            const { getRepo, updateVersionInFile } = require(`${process.env.GITHUB_WORKSPACE}/ci/index.js`);
+            const { getValuesFile, updateVersionInFile, updateValuesFile } = require(`${process.env.GITHUB_WORKSPACE}/ci/index.js`);
 
             const { ENVIRONMENT, VERSION, REPO } = process.env;
             const owner = 'miketheo423';
             const path = 'values.yaml';
 
-            const data = await getRepo({ github, owner, repo: REPO, path })
-            const content = updateVersionInFile(data.content, VERSION);
+            # Get the values.yaml file data
+            const { content, sha } = await getValuesFile({ github, owner, repo: REPO, path })
 
-            await github.rest.repos.createOrUpdateFileContents({
-              owner,
-              repo: REPO,
-              path,
-              content,
-              sha: data.sha,
-              message: `Bumps to ${VERSION}`,
-              committer: {
-                name: context.actor,
-                email: 'miketheocodes@gmail.com'
-              },
-              author: {
-                name: context.actor,
-                email: 'miketheocodes@gmail.com'
-              }
+            # Update file to include new version
+            const updateContent = updateVersionInFile(data.content, VERSION);
+
+            # Commit updates file to repo
+            await updateValuesFile({ 
+              github, 
+              owner, 
+              path, 
+              sha, 
+              repo: REPO, 
+              content: updateContent, 
+              version: VERSION 
             });
 
       - name: Checkout Deployment Repo
