@@ -37,7 +37,7 @@ jobs:
           VERSION: "${{ steps.picks_release.outputs.release }}"
         with:
           script: |
-            const { updateFile } = require('./ci/updateFile.js');
+            const { updateFile } = require('../../ci/updateFile.js');
             const content = updateFile(process.env.ENVIRONMENT, process.env.VERSION);
             github.rest.repos.createOrUpdateFileContents({
               owner: 'miketheo423',
