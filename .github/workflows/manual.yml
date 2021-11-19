@@ -25,33 +25,50 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: "miketheo423/ci-workflow-poc"
           type: "stable"
-      - name: Show release version
-        run: |
-          echo ${{ steps.picks_release.outputs.release }} \
-          echo ${{ steps.picks_release.outputs.release_id }}
-      - name: Checkout Deploy Repo
+
+      - name: Checkout Deployment Repo
         id: deploy_repo
         uses: actions/checkout@v2
         with:
           repository: "miketheo423/ci-env-${{ github.event.inputs.environment }}"
           ref: main
           token: ${{ secrets.PAT }}
-      - name: Log
-        run: echo ${{ github.ref }}
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Update values.yml
+        uses: actions/github-script@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          REPO: ci-env-${{ github.event.inputs.environment }}
+          ENVIRONMENT: ${{ github.event.inputs.environment }}
+          VERSION: "${{ steps.picks_release.outputs.release }}"
         with:
-          tag_name: ${{ steps.picks_release.outputs.release }}
-          release_name: "Release ${{ steps.picks_release.outputs.release }}"
-          commitish: ${{github.ref}}
-          body: |
-            Release Notes:
-            https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
-          draft: false
-          prerelease: false
-          owner: miketheo423
-          repo: ci-env-${{ github.event.inputs.environment }}
+          script: |
+            const { updateFile } = require('./ci/updateFile.js')
+            const content = updateFile(process.env.ENVIRONMENT, process.env.VERSION)
+            github.rest.repos.createOrUpdateFileContents({
+              owner: 'miketheo423',
+              repo: process.env.REPO,
+              path: 'values.yaml',
+              message: `Bumps to ${process.env.VERSION}`,
+              content,
+              committer.name: context.actor,
+              committer.email: 'miketheocodes@gmail.com',
+              author.name: context.actor,
+              author.email: 'miketheocodes@gmail.com'
+            })
+
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.PAT }}
+      #   with:
+      #     tag_name: ${{ steps.picks_release.outputs.release }}
+      #     release_name: "Release ${{ steps.picks_release.outputs.release }}"
+      #     commitish: ${{github.ref}}
+      #     body: |
+      #       Release Notes:
+      #       https://github.com/miketheo423/ci-workflow-poc/releases/tag/${{ steps.picks_release.outputs.release }}
+      #     draft: false
+      #     prerelease: false
+      #     owner: miketheo423
+      #     repo: ci-env-${{ github.event.inputs.environment }}
