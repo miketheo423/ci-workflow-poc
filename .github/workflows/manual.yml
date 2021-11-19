@@ -48,7 +48,7 @@ jobs:
 
             const { content, sha } = await getValuesFile({ github, owner, repo: REPO, path })
 
-            const updatedContent = updateVersionInFile(data.content, VERSION);
+            const updatedContent = updateVersionInFile(content, VERSION);
 
             await updateValuesFile({ 
               github, 
