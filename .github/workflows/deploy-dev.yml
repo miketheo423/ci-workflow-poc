@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to dev
-        uses: "miketheodorou/release-action"
+        uses: miketheodorou/release-action
         with:
           deployment-owner: miketheodorou
           deployment-repo: ci-env-dev
