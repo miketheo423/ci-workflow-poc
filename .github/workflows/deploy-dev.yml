@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to dev
-        uses: miketheodorou/release-action@v1.0.6
+        uses: miketheodorou/release-action@v1.0.7
         with:
           deployment-owner: miketheodorou
           deployment-repo: ci-env-dev
